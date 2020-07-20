@@ -9,6 +9,14 @@ cmake_minimum_required(VERSION 3.5.0)
 project(MicroXrceDDS_Test)
 
 ######################################################################
+# 设置编译app的源文件列表
+######################################################################
+set(APP_SRC_LIST
+	main.c
+	# std_msg_string.c
+)
+
+######################################################################
 # 设置编译uxr的源文件列表
 ######################################################################
 set(UXR_SRC_LIST
@@ -40,9 +48,9 @@ set(UXR_SRC_LIST
 	uxr/src/c/core/session/stream/stream_storage.c
 	
 	# profile/discovery
-	# $<$<BOOL:${PROFILE_DISCOVERY}>:src/c/profile/discovery/discovery.c>
+	# uxr/src/c/profile/discovery/discovery.c
 	# # profile/discovery/transport
-	# $<$<AND:$<BOOL:${PROFILE_DISCOVERY}>,$<BOOL:${UCLIENT_PLATFORM_POSIX}>>:src/c/profile/discovery/transport/udp_transport_datagram_posix.c>
+	# uxr/src/c/profile/discovery/transport/udp_transport_datagram_posix.c
 	# $<$<AND:$<BOOL:${PROFILE_DISCOVERY}>,$<PLATFORM_ID:Windows>>:src/c/profile/discovery/transport/udp_transport_datagram_windows.c>
 
 	# # profile/transport/ip
@@ -54,23 +62,20 @@ set(UXR_SRC_LIST
 	# $<$<AND:$<BOOL:${PROFILE_TCP_TRANSPORT}>,$<PLATFORM_ID:Windows>>:src/c/profile/transport/ip/tcp/tcp_transport_windows.c>
 	# $<$<BOOL:${PROFILE_TCP_TRANSPORT}>:src/c/profile/transport/ip/tcp/tcp_transport.c>
 	# # profile/transport/ip/udp
-	# $<$<BOOL:${UCLIENT_EXTERNAL_UDP}>:src/c/profile/transport/ip/udp/udp_transport_external.c>
+	uxr/src/c/profile/transport/ip/udp/udp_transport_external.c
 	# $<$<AND:$<BOOL:${PROFILE_UDP_TRANSPORT}>,$<BOOL:${UCLIENT_PLATFORM_POSIX_NOPOLL}>>:src/c/profile/transport/ip/udp/udp_transport_posix_nopoll.c>
 	# $<$<AND:$<BOOL:${PROFILE_UDP_TRANSPORT}>,$<BOOL:${UCLIENT_PLATFORM_POSIX}>>:src/c/profile/transport/ip/udp/udp_transport_posix.c>
 	# $<$<AND:$<BOOL:${PROFILE_UDP_TRANSPORT}>,$<PLATFORM_ID:Windows>>:src/c/profile/transport/ip/udp/udp_transport_windows.c>
-	# $<$<BOOL:${PROFILE_UDP_TRANSPORT}>:src/c/profile/transport/ip/udp/udp_transport.c>
+	uxr/src/c/profile/transport/ip/udp/udp_transport.c
 	# $<$<BOOL:${PROFILE_DISCOVERY}>:src/c/profile/transport/ip/udp/udp_transport.c>
 	# profile/transport/serial
-	uxr/src/c/profile/transport/serial/serial_protocol.c
-	uxr/src/c/profile/transport/serial/serial_transport_test.c
+	# uxr/src/c/profile/transport/serial/serial_protocol.c
+	# uxr/src/c/profile/transport/serial/serial_transport_external.c
 	# $<$<AND:$<BOOL:${PROFILE_SERIAL_TRANSPORT}>,$<BOOL:${UCLIENT_PLATFORM_POSIX}>>:src/c/profile/transport/serial/serial_transport_posix.c>
-	uxr/src/c/profile/transport/serial/serial_transport.c
+	# uxr/src/c/profile/transport/serial/serial_transport.c
 
 	# profile/util
 	uxr/src/c/util/time.c
-
-	# main
-	main.c
 )
 
 ######################################################################
@@ -90,7 +95,7 @@ set(UCDR_SRC_LIST
 ######################################################################
 # 设置编译类型
 ######################################################################
-add_executable(${PROJECT_NAME} ${UXR_SRC_LIST} ${UCDR_SRC_LIST}) # 生成可执行文件
+add_executable(${PROJECT_NAME} ${APP_SRC_LIST} ${UXR_SRC_LIST} ${UCDR_SRC_LIST}) # 生成可执行文件
 
 ######################################################################
 # 设置头文件路径
@@ -99,6 +104,7 @@ target_include_directories(${PROJECT_NAME}
 PUBLIC
 	uxr/include
 	ucdr/include
+	.
 PRIVATE
 	uxr/src/c
 	ucdr/src/c
